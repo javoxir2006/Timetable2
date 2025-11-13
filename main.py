@@ -6,6 +6,7 @@ from bs4 import BeautifulSoup as bs
 
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
 
 
 def show_svg():
@@ -13,8 +14,13 @@ def show_svg():
     chrome_options.add_argument("--headless")
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
-
-    driver = webdriver.Chrome(options=chrome_options)
+    chrome_options.add_argument("--disable-gpu")
+    
+    chrome_options.binary_location = "/usr/bin/chromium-browser"
+    
+    service = Service(executable_path="/usr/bin/chromedriver")
+    
+    driver = webdriver.Chrome(service=service, options=chrome_options)
 
     driver.get("https://iut.edupage.org/timetable/")
 
@@ -69,7 +75,6 @@ def show_svg():
           gap: 8px;
           width: 100%;
           height: 100vh;
-          border: 2px solid red;
         }}
 
         .last-updated {{

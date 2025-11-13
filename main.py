@@ -38,7 +38,7 @@ def show_svg():
     full = driver.find_element(By.CLASS_NAME, "dropDownPanel")
     lists = full.find_elements(By.CSS_SELECTOR, "li")
     lists[23].click()
-    time.sleep(2)
+    time.sleep(5)
 
     print("5 seconds")
     html_source = driver.page_source
@@ -48,8 +48,17 @@ def show_svg():
     soup = bs(html_source, 'lxml')
 
     svg_tag = soup.find('svg')
+    if svg_tag:
+        svg_tag['height'] = '600'
+        svg_tag['width'] = '900'
 
-    svg_str = str(svg_tag)
+        g_tag = svg_tag.fin('g')
+        if g_tag:
+            g_tag['transform'] = 'scale(0.3)'
+
+        svg_str = str(svg_tag)
+    else:
+        svg_str = ""
    
     svg_str = svg_str.replace(
         'style="position: absolute; left: 0px; top: 0px; direction: ltr; stroke: rgb(0, 0, 0); stroke-width: 0; fill: rgb(0, 0, 0);"',
@@ -106,4 +115,5 @@ def show_svg():
 
 if __name__ == "__main__":
     show_svg()
+
 

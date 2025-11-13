@@ -52,7 +52,7 @@ def show_svg():
         svg_tag['height'] = '600'
         svg_tag['width'] = '900'
 
-        g_tag = svg_tag.fin('g')
+        g_tag = svg_tag.find('g')
         if g_tag:
             g_tag['transform'] = 'scale(0.3)'
 
@@ -115,5 +115,6 @@ def show_svg():
 
 if __name__ == "__main__":
     show_svg()
+
 
 

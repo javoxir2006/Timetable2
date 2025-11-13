@@ -2,13 +2,15 @@ name: Scrape Timetable
 
 on:
   schedule:
-    # Runs every Monday at 6 AM UTC (adjust as needed)
     - cron: '0 6 * * 1'
-  workflow_dispatch:  # Allows manual trigger from GitHub UI
+  workflow_dispatch:
 
 jobs:
   scrape:
     runs-on: ubuntu-latest
+    
+    permissions:
+      contents: write
     
     steps:
     - name: Checkout repository
@@ -19,14 +21,21 @@ jobs:
       with:
         python-version: '3.10'
         
-    - name: Install dependencies
-      run: |
-        pip install -r requirements.txt
-        
     - name: Install Chrome and ChromeDriver
       run: |
         sudo apt-get update
         sudo apt-get install -y chromium-browser chromium-chromedriver
+        
+    - name: Verify Chrome installation
+      run: |
+        which chromium-browser
+        which chromedriver
+        chromium-browser --version
+        chromedriver --version
+        
+    - name: Install dependencies
+      run: |
+        pip install -r requirements.txt
         
     - name: Run scraper
       run: python main.py

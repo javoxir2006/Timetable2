@@ -6,7 +6,8 @@ from bs4 import BeautifulSoup as bs
 
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.chrome.service import Service
+from datetime import datetime, timezone, timedelta
+
 
 
 def show_svg():
@@ -14,13 +15,8 @@ def show_svg():
     chrome_options.add_argument("--headless")
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
-    chrome_options.add_argument("--disable-gpu")
-    
-    chrome_options.binary_location = "/usr/bin/chromium-browser"
-    
-    service = Service(executable_path="/usr/bin/chromedriver")
-    
-    driver = webdriver.Chrome(service=service, options=chrome_options)
+
+    driver = webdriver.Chrome(options=chrome_options)
 
     driver.get("https://iut.edupage.org/timetable/")
 
@@ -54,6 +50,10 @@ def show_svg():
         'style="position: relative; direction: ltr; stroke: rgb(0, 0, 0); stroke-width: 0; fill: rgb(0, 0, 0);"'
     )
 
+    svg_str = svg_str.replace('height="509.0909090909091"', 'height="600"')
+    svg_str = svg_str.replace('width="720"', 'width="900"')
+    svg_str = svg_str.replace('transform="scale(0.24242424242424243)"', 'transform="scale(0.3)"')
+
     html_content = f"""
     <!doctype html>
 <html>
@@ -81,7 +81,7 @@ def show_svg():
             text-align: center;
             color: #666;
             margin-top: 10px;
-            font-size: 14px;
+            font-size: 20px;
         }}
     </style>
   </head>
@@ -89,7 +89,7 @@ def show_svg():
   <body>
     <div class="svg-container">
       { svg_str }
-      <div class="last-updated">Last updated: {time.strftime("%H:%M / %Y-%m-%d")}</div>
+<div class="last-updated">Last updated: {datetime.now(timezone(timedelta(hours=5))).strftime("%H:%M / %Y-%m-%d")}</div>
     </div>
   </body>
 </html>

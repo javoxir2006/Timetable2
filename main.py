@@ -1,0 +1,97 @@
+import time
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from bs4 import BeautifulSoup as bs
+
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+
+
+def show_svg():
+    chrome_options = Options()
+    chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--no-sandbox")
+    chrome_options.add_argument("--disable-dev-shm-usage")
+
+    driver = webdriver.Chrome(options=chrome_options)
+
+    driver.get("https://iut.edupage.org/timetable/")
+
+    wait = WebDriverWait(driver, 15)
+    element = wait.until(
+        EC.presence_of_element_located((By.CSS_SELECTOR, "span[title='Classes']"))
+    )
+
+    element.click()
+
+    wait.until(EC.presence_of_element_located((By.CLASS_NAME, "dropDownPanel")))
+
+    full = driver.find_element(By.CLASS_NAME, "dropDownPanel")
+    lists = full.find_elements(By.CSS_SELECTOR, "li")
+    lists[23].click()
+    time.sleep(2)
+
+    print("5 seconds")
+    html_source = driver.page_source
+
+    driver.quit()
+
+    soup = bs(html_source, 'lxml')
+
+    svg_tag = soup.find('svg')
+
+    svg_str = str(svg_tag)
+   
+    svg_str = svg_str.replace(
+        'style="position: absolute; left: 0px; top: 0px; direction: ltr; stroke: rgb(0, 0, 0); stroke-width: 0; fill: rgb(0, 0, 0);"',
+        'style="position: relative; direction: ltr; stroke: rgb(0, 0, 0); stroke-width: 0; fill: rgb(0, 0, 0);"'
+    )
+
+    html_content = f"""
+    <!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Timetable</title>
+    <style>
+      body{{
+          margin: 0;
+          padding: 0;
+          width: 100vw;
+          box-sizing: border-box;
+      }}
+
+      .svg-container {{
+          display: flex;
+          align-items: center;
+          flex-direction: column;
+          gap: 8px;
+          width: 100%;
+          height: 100vh;
+          border: 2px solid red;
+        }}
+
+        .last-updated {{
+            text-align: center;
+            color: #666;
+            margin-top: 10px;
+            font-size: 14px;
+        }}
+    </style>
+  </head>
+
+  <body>
+    <div class="svg-container">
+      { svg_str }
+      <div class="last-updated">Last updated: {time.strftime("%H:%M / %Y-%m-%d")}</div>
+    </div>
+  </body>
+</html>
+"""
+    with open('index.html', 'w', encoding='utf-8') as f:
+            f.write(html_content)
+        
+
+if __name__ == "__main__":
+    show_svg()

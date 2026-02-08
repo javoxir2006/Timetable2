@@ -25,10 +25,6 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y chromium-browser chromium-chromedriver
-
-    - name: Install missing libraries
-      run: |
-        sudo apt-get install -y libpixelformat1
         
     - name: Verify Chrome installation
       run: |

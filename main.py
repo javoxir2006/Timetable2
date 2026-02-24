@@ -37,7 +37,7 @@ def show_svg():
 
     full = driver.find_element(By.CLASS_NAME, "dropDownPanel")
     lists = full.find_elements(By.CSS_SELECTOR, "li")
-    lists[23].click()
+    lists[31].click()
     time.sleep(5)
 
     print("5 seconds")
@@ -115,6 +115,7 @@ def show_svg():
 
 if __name__ == "__main__":
     show_svg()
+
 
 
 
